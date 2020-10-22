@@ -36,11 +36,7 @@ namespace cloud5mins.Function
             playlistId = playlistId ?? data?.playlistId;
 
             _APIKEY = Environment.GetEnvironmentVariable("APIKEY");
-            
-            // var builder = new ConfigurationBuilder();
-            // builder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("connectionString"));
-            // Config = builder.Build();
-
+        
             var stats = await GetPlayListVideos(playlistId);
 
             return new OkObjectResult(new JsonResult(stats));
