@@ -2,9 +2,24 @@
 
 Using the Serverless Azure functions it returns YouTube Statistics.
 
+Once deploy you will need to add `APIKEY` to you configuration. If you are running it locally add `local.settings.json` file with the correct values.
+
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "APIKEY": "__YOUR_API_KEY__"
+  }
+}
+```
+
 ## Currently implemented:
 
 More to come but for now this is what we have.
+
+---
 
 ### GetVideoStatsFromPlaylist
 
