@@ -62,7 +62,14 @@ namespace cloud5mins.Function
 
                     foreach (var playlistItem in searchResponse.Items)
                     {
-                        var video = await GetVideoDetails(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
+                        YouTubeVideoStatistics video = null;
+                        if(playlistItem.Snippet.Title != "Private video"){
+                            video = await GetVideoDetails(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
+                        }
+                        else{
+                            video = new YouTubeVideoStatistics() {Title = playlistItem.Snippet.Title, VideoId = playlistItem.Snippet.ResourceId.VideoId};
+                        }
+                        
                         Console.WriteLine("- ({1}) {0}", video.Title, video.ViewCount);
                         videoList.Add(video);
                     }
