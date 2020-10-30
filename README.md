@@ -2,7 +2,7 @@
 
 Using the Serverless Azure functions it returns YouTube Statistics.
 
-Once deploy you will need to add `APIKEY` to you configuration. If you are running it locally add `local.settings.json` file with the correct values.
+Once deployed, you will need to add `APIKEY` to you configuration. If you are running it locally add `local.settings.json` file with the correct values.
 
 ```json
 {
@@ -14,6 +14,9 @@ Once deploy you will need to add `APIKEY` to you configuration. If you are runni
   }
 }
 ```
+## Deployment
+
+[Develop Azure Functions by using Visual Studio Code](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs-code?tabs=csharp&?WT.mc_id=azYouTubeStats-github-frbouche)
 
 ## Currently implemented:
 
