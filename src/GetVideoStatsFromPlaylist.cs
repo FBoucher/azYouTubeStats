@@ -88,7 +88,7 @@ namespace cloud5mins.Function
                 ApiKey = _APIKEY,
             }))
             {
-                var searchRequest = youtubeService.Videos.List("statistics");
+                var searchRequest = youtubeService.Videos.List("statistics,recordingDetails,liveStreamingDetails");
                 searchRequest.Id = videoId;
                 var searchResponse = await searchRequest.ExecuteAsync();
 
@@ -105,6 +105,16 @@ namespace cloud5mins.Function
                         FavoriteCount = youTubeVideo.Statistics.FavoriteCount ?? 0,
                         CommentCount = youTubeVideo.Statistics.CommentCount ?? 0,
                     };
+                    if(youTubeVideo.RecordingDetails != null)
+                    {
+                        videoDetails.RecordingDate = youTubeVideo.RecordingDetails.RecordingDate ?? String.Empty;
+                        videoDetails.ETag = youTubeVideo.RecordingDetails.ETag ?? String.Empty;
+                    }
+                    if(youTubeVideo.LiveStreamingDetails != null)
+                    {
+                        videoDetails.ActualStartTime = youTubeVideo.LiveStreamingDetails.ActualStartTime ?? String.Empty;
+                        videoDetails.ActualEndTime = youTubeVideo.LiveStreamingDetails.ActualEndTime ?? String.Empty;
+                    }
                 }
             }
             return videoDetails;
