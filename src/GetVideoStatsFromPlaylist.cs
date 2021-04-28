@@ -88,7 +88,7 @@ namespace cloud5mins.Function
                 ApiKey = _APIKEY,
             }))
             {
-                var searchRequest = youtubeService.Videos.List("statistics,recordingDetails,liveStreamingDetails");
+                var searchRequest = youtubeService.Videos.List("statistics,contentDetails,snippet");
                 searchRequest.Id = videoId;
                 var searchResponse = await searchRequest.ExecuteAsync();
 
@@ -102,18 +102,17 @@ namespace cloud5mins.Function
                         ViewCount = youTubeVideo.Statistics.ViewCount ?? 0,
                         LikeCount = youTubeVideo.Statistics.LikeCount ?? 0,
                         DislikeCount = youTubeVideo.Statistics.DislikeCount ?? 0,
-                        FavoriteCount = youTubeVideo.Statistics.FavoriteCount ?? 0,
-                        CommentCount = youTubeVideo.Statistics.CommentCount ?? 0,
+                        CommentCount = youTubeVideo.Statistics.CommentCount ?? 0
                     };
-                    if(youTubeVideo.RecordingDetails != null)
+                    if(youTubeVideo.Snippet != null)
                     {
-                        videoDetails.RecordingDate = youTubeVideo.RecordingDetails.RecordingDate ?? String.Empty;
-                        videoDetails.ETag = youTubeVideo.RecordingDetails.ETag ?? String.Empty;
+                        videoDetails.Tags = youTubeVideo.Snippet.Tags ?? null;
+                        videoDetails.PublishedAt = youTubeVideo.Snippet.PublishedAt ?? String.Empty;
+                        videoDetails.Language = youTubeVideo.Snippet.DefaultAudioLanguage ?? String.Empty;
                     }
-                    if(youTubeVideo.LiveStreamingDetails != null)
+                    if(youTubeVideo.ContentDetails != null)
                     {
-                        videoDetails.ActualStartTime = youTubeVideo.LiveStreamingDetails.ActualStartTime ?? String.Empty;
-                        videoDetails.ActualEndTime = youTubeVideo.LiveStreamingDetails.ActualEndTime ?? String.Empty;
+                        videoDetails.Duration = youTubeVideo.ContentDetails.Duration ?? String.Empty;
                     }
                 }
             }

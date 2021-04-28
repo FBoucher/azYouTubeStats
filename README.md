@@ -51,8 +51,14 @@ Output:
         "viewCount": 903,
         "likeCount": 26,
         "dislikeCount": 4,
-        "favoriteCount": 0,
-        "commentCount": 6
+        "commentCount": 6,
+        "language": "fr-CA",
+        "tags": [
+          "microsoft azure",
+          "cloud"
+        ],
+        "publishedAt": "2021-03-01T11:41:27Z",
+        "duration": "PT7M5S"
         }
     ]
 }
