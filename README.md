@@ -16,7 +16,7 @@ Once deployed, you will need to add `APIKEY` to you configuration. If you are ru
 ```
 ## Deployment
 
-[Develop Azure Functions by using Visual Studio Code](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs-code?tabs=csharp&?WT.mc_id=azYouTubeStats-github-frbouche)
+[Develop Azure Functions by using Visual Studio Code](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp&%3FWT.mc_id=azYouTubeStats-github-frbouche&WT.mc_id=dotnet-0000-frbouche)
 
 ## Currently implemented:
 
@@ -51,8 +51,14 @@ Output:
         "viewCount": 903,
         "likeCount": 26,
         "dislikeCount": 4,
-        "favoriteCount": 0,
-        "commentCount": 6
+        "commentCount": 6,
+        "language": "fr-CA",
+        "tags": [
+          "microsoft azure",
+          "cloud"
+        ],
+        "publishedAt": "2021-03-01T11:41:27Z",
+        "duration": "PT7M5S"
         }
     ]
 }
