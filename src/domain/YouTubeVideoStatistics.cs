@@ -14,6 +14,8 @@ namespace cloud5mins.domain
 
         public virtual IList<string> Tags { get; set; }
 
+        public List<YouTubeComment> Comments { get; set; }
+
 
         // The value is specified in ISO8601 (YYYY-MM- DDThh:mm:ss.sssZ) format.
         public string PublishedAt { get; set; }

@@ -28,22 +28,29 @@ namespace cloud5mins.Function
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-
+            bool addComments = false;
             string playlistId = req.Query["playlistId"];
+            string withComment = req.Query["withComment"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             playlistId = playlistId ?? data?.playlistId;
+            withComment = withComment ?? data?.withComment ?? "false";
+            
+            if(withComment.ToLower() == "true"){
+                addComments = true;
+            }
+           
 
             _APIKEY = Environment.GetEnvironmentVariable("APIKEY");
         
-            var stats = await GetPlayListVideos(playlistId);
+            var stats = await GetPlayListVideos(playlistId, addComments);
 
             return new OkObjectResult(new JsonResult(stats));
         }
 
 
-        static async Task<List<YouTubeVideoStatistics>> GetPlayListVideos(string playlistId)
+        static async Task<List<YouTubeVideoStatistics>> GetPlayListVideos(string playlistId, bool addComments)
         {
             var videoList = new List<YouTubeVideoStatistics>();
             using (var youtubeService = new YouTubeService(new BaseClientService.Initializer()
@@ -65,9 +72,16 @@ namespace cloud5mins.Function
                         YouTubeVideoStatistics video = null;
                         if(playlistItem.Snippet.Title != "Private video"){
                             video = await GetVideoDetails(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
+
                         }
                         else{
                             video = new YouTubeVideoStatistics() {Title = playlistItem.Snippet.Title, VideoId = playlistItem.Snippet.ResourceId.VideoId};
+                        }
+                        if(addComments){
+                            List<YouTubeComment> comments = await GetVideoCommentsFromPlaylist.GetCommentList(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
+                            if(comments != null && comments.Count >=1 ){
+                                video.Comments = comments;
+                            }
                         }
                         
                         Console.WriteLine("- ({1}) {0}", video.Title, video.ViewCount);

@@ -66,7 +66,7 @@ namespace cloud5mins.Function
                         List<YouTubeComment> comments;
                         if (playlistItem.Snippet.Title != "Private video")
                         {
-                            comments = await GetCommentList(playlistItem.Snippet.ResourceId.VideoId);
+                            comments = await GetCommentList(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
                             if(comments.Count >= 1){
                                 commentList.AddRange(comments);
                             }
@@ -88,7 +88,7 @@ namespace cloud5mins.Function
             return commentList;
         }
 
-        static async Task<List<YouTubeComment>> GetCommentList(string videoId)
+        public static async Task<List<YouTubeComment>> GetCommentList(string videoId, string videoTitle)
         {
 
             var commentList = new List<YouTubeComment>();
@@ -108,18 +108,12 @@ namespace cloud5mins.Function
 
                     foreach (var commentItem in searchResponse.Items)
                     {
-                        // YouTubeComment comment = null;
-                        // if (commentItem.Snippet.Title != "Private video")
-                        // {
-                        //     comment. = await GetVideoDetails(commentItem.Snippet.ResourceId.VideoId, commentItem.Snippet.Title);
-                        // }
-                        // else
-                        // {
                             YouTubeComment comment = new YouTubeComment()
                             {
 
                                 CommentId = commentItem.Id,
                                 VideoId = commentItem.Snippet.VideoId,
+                                VideoTitle = videoTitle,
                                 TextOriginal = commentItem.Snippet.TopLevelComment.Snippet.TextOriginal,
                                 AuthorDisplayName = commentItem.Snippet.TopLevelComment.Snippet.AuthorDisplayName,
                                 LikeCount = commentItem.Snippet.TopLevelComment.Snippet.LikeCount ?? 0,
@@ -128,7 +122,6 @@ namespace cloud5mins.Function
                                 UpdatedAt = commentItem.Snippet.TopLevelComment.Snippet.UpdatedAt,
                                 IsPublic = commentItem.Snippet.IsPublic ?? true
                             };
-                        // }
 
                         Console.WriteLine("- ({1}) {0}", comment.VideoId, comment.TextOriginal);
                         commentList.Add(comment);
@@ -138,65 +131,5 @@ namespace cloud5mins.Function
             }
             return commentList;
         }
-
-
-        static async Task<YouTubeVideoStatistics> GetVideoDetails(string videoId, string title)
-        {
-            YouTubeVideoStatistics videoDetails = null;
-            using (var youtubeService = new YouTubeService(new BaseClientService.Initializer()
-            {
-                ApiKey = _APIKEY,
-            }))
-            {
-                var searchRequest = youtubeService.Videos.List("statistics,contentDetails,snippet");
-                searchRequest.Id = videoId;
-                var searchResponse = await searchRequest.ExecuteAsync();
-
-                var youTubeVideo = searchResponse.Items.FirstOrDefault();
-                if (youTubeVideo != null)
-                {
-                    videoDetails = new YouTubeVideoStatistics()
-                    {
-                        VideoId = videoId,
-                        Title = title.Replace(',', ' '),
-                        ViewCount = youTubeVideo.Statistics.ViewCount ?? 0,
-                        LikeCount = youTubeVideo.Statistics.LikeCount ?? 0,
-                        DislikeCount = youTubeVideo.Statistics.DislikeCount ?? 0,
-                        CommentCount = youTubeVideo.Statistics.CommentCount ?? 0
-                    };
-                    if (youTubeVideo.Snippet != null)
-                    {
-                        videoDetails.Tags = youTubeVideo.Snippet.Tags ?? null;
-                        videoDetails.PublishedAt = youTubeVideo.Snippet.PublishedAt ?? String.Empty;
-                        videoDetails.Language = youTubeVideo.Snippet.DefaultAudioLanguage ?? String.Empty;
-                    }
-                    if (youTubeVideo.ContentDetails != null)
-                    {
-                        videoDetails.Duration = youTubeVideo.ContentDetails.Duration ?? String.Empty;
-                    }
-                }
-            }
-            return videoDetails;
-        }
-
-
-
-
-
-    }
-
-
-    public class YouTubeComment
-    {
-        public string CommentId { get; set; }
-        public string VideoId { get; set; }
-        public string TextOriginal { get; set; }
-        public string AuthorDisplayName { get; set; }
-        public long LikeCount { get; set; }
-        public long TotalReplyCount { get; set; }
-        public string PublishedAt { get; set; }
-        public string UpdatedAt { get; set; }
-        public bool IsPublic { get; set; }
-
     }
 }
