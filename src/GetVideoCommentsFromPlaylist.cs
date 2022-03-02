@@ -38,15 +38,15 @@ namespace cloud5mins.Function
 
             _APIKEY = Environment.GetEnvironmentVariable("APIKEY");
 
-            var stats = await GetCommentList(playlistId);
+            var comments = await GetPlayListComments(playlistId);
 
-            return new OkObjectResult(new JsonResult(stats));
+            return new OkObjectResult(new JsonResult(comments));
         }
 
 
-        static async Task<List<YouTubeVideoStatistics>> GetPlayListVideos(string playlistId)
+        static async Task<List<YouTubeComment>> GetPlayListComments(string playlistId)
         {
-            var videoList = new List<YouTubeVideoStatistics>();
+            var commentList = new List<YouTubeComment>();
             using (var youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = _APIKEY,
@@ -63,23 +63,29 @@ namespace cloud5mins.Function
 
                     foreach (var playlistItem in searchResponse.Items)
                     {
-                        YouTubeVideoStatistics video = null;
+                        List<YouTubeComment> comments;
                         if (playlistItem.Snippet.Title != "Private video")
                         {
-                            video = await GetVideoDetails(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
+                            comments = await GetCommentList(playlistItem.Snippet.ResourceId.VideoId);
+                            if(comments.Count >= 1){
+                                commentList.AddRange(comments);
+                            }
+                            else{
+                                Console.WriteLine("- No Comments for Video ({0})", playlistItem.Snippet.ResourceId.VideoId);
+                            }
                         }
                         else
                         {
-                            video = new YouTubeVideoStatistics() { Title = playlistItem.Snippet.Title, VideoId = playlistItem.Snippet.ResourceId.VideoId };
+                            commentList.Add( new YouTubeComment() { VideoId = playlistItem.Snippet.ResourceId.VideoId });
                         }
 
-                        Console.WriteLine("- ({1}) {0}", video.Title, video.ViewCount);
-                        videoList.Add(video);
+                        Console.WriteLine("- Comments From Video ({0})", playlistItem.Snippet.ResourceId.VideoId);
+
                     }
                     nextPageToken = searchResponse.NextPageToken;
                 }
             }
-            return videoList;
+            return commentList;
         }
 
         static async Task<List<YouTubeComment>> GetCommentList(string videoId)
