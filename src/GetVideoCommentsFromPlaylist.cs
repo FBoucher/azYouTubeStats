@@ -88,7 +88,13 @@ namespace cloud5mins.Function
             return commentList;
         }
 
-        public static async Task<List<YouTubeComment>> GetCommentList(string videoId, string videoTitle)
+        public static async Task<List<YouTubeComment>>GetCommentList(string apiKey, string videoId, string videoTitle)
+        {
+            _APIKEY = apiKey;
+            return await GetCommentList(videoId, videoTitle);
+        }
+
+        private static async Task<List<YouTubeComment>> GetCommentList(string videoId, string videoTitle)
         {
 
             var commentList = new List<YouTubeComment>();
@@ -110,7 +116,6 @@ namespace cloud5mins.Function
                     {
                             YouTubeComment comment = new YouTubeComment()
                             {
-
                                 CommentId = commentItem.Id,
                                 VideoId = commentItem.Snippet.VideoId,
                                 VideoTitle = videoTitle,
@@ -123,7 +128,7 @@ namespace cloud5mins.Function
                                 IsPublic = commentItem.Snippet.IsPublic ?? true
                             };
 
-                        Console.WriteLine("- ({1}) {0}", comment.VideoId, comment.TextOriginal);
+                        Console.WriteLine("- ({1}) {0}", comment.VideoId, comment.CommentId);
                         commentList.Add(comment);
                     }
                     nextPageToken = searchResponse.NextPageToken;

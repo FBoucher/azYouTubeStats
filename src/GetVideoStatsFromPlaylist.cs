@@ -37,11 +37,10 @@ namespace cloud5mins.Function
             playlistId = playlistId ?? data?.playlistId;
             withComment = withComment ?? data?.withComment ?? "false";
             
-            if(withComment.ToLower() == "true"){
+            if(withComment is not null  &&  withComment.ToLower() == "true"){
                 addComments = true;
             }
            
-
             _APIKEY = Environment.GetEnvironmentVariable("APIKEY");
         
             var stats = await GetPlayListVideos(playlistId, addComments);
@@ -78,7 +77,7 @@ namespace cloud5mins.Function
                             video = new YouTubeVideoStatistics() {Title = playlistItem.Snippet.Title, VideoId = playlistItem.Snippet.ResourceId.VideoId};
                         }
                         if(addComments){
-                            List<YouTubeComment> comments = await GetVideoCommentsFromPlaylist.GetCommentList(playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
+                            List<YouTubeComment> comments = await GetVideoCommentsFromPlaylist.GetCommentList(_APIKEY, playlistItem.Snippet.ResourceId.VideoId, playlistItem.Snippet.Title);
                             if(comments != null && comments.Count >=1 ){
                                 video.Comments = comments;
                             }
